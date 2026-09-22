@@ -47,6 +47,23 @@ app.get("/api/owners", (req, res) => {
     const limit = req.query.limit;
     const offset = req.query.offset;
 
+    switch (get_1_1_query_params_validity(city, name, sort, sortorder, limit, offset)) {
+        case 0:
+            break;
+        case 1:
+            return res.status(400).json({error:"Limit must be at least 1"});
+        case 2:
+            return res.status(400).json({error:"Limit must be at most 100"});
+        case 3:
+            return res.status(400).json({error:"Offset must be positive or 0"});
+        case 4:
+            return res.status(400).json({error:"The data may only be sorted based on the name, city, or account creation date"});
+        case 5:
+            return res.status(400).json({error:"The data may only be sorted in ascending or descending order"});
+        default:
+            return res.status(500).json({error:"If this happened, there is a SERIOUS issue"});
+    }
+
     const SQL_query = construct_1_1_query(city, name, sort, sortorder, limit, offset);
     const SQL_parameters = construct_1_1_parameters(city, name, sort, sortorder, limit, offset);
 
@@ -60,6 +77,26 @@ app.get("/api/owners", (req, res) => {
         }
     });
 });
+
+
+function get_1_1_query_params_validity(city, name, sort, sortorder, limit, offset) {
+    if (limit < 1) {
+        return 1;
+    }
+    if (limit > 100) {
+        return 2;
+    }
+    if (offset < 0) {
+        return 3;
+    }
+    if (sort != "name" && sort != "city" && sort != "created_at") {
+        return 4;
+    }
+    if (sortorder != "asc" && sortorder != "desc") {
+        return 5;
+    }
+    return 0;
+}
 
 
 function construct_1_1_query(city, name, sort, sortorder, limit, offset) {
