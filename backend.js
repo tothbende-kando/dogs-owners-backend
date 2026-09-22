@@ -47,7 +47,7 @@ app.get("/api/owners", (req, res) => {
     const limit = req.query.limit;
     const offset = req.query.offset;
 
-    switch (get_1_1_query_params_validity(city, name, sort, sortorder, limit, offset)) {
+    switch (check_1_1_query_params_validity(city, name, sort, sortorder, limit, offset)) {
         case 0:
             break;
         case 1:
@@ -79,7 +79,7 @@ app.get("/api/owners", (req, res) => {
 });
 
 
-function get_1_1_query_params_validity(city, name, sort, sortorder, limit, offset) {
+function check_1_1_query_params_validity(city, name, sort, sortorder, limit, offset) {
     if (limit < 1) {
         return 1;
     }
