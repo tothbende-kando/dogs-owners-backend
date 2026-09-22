@@ -10,7 +10,41 @@
 <body>
     <main>
         <h1>Dog Club Backend</h1>
-        <button onclick="assignment_1_1()">Test assignment 1.1</button>
+        <form action="#" method="get" id="assignment_1_1_form">
+            <div class="column">
+                <span style="text-align: center;">Filters</span>
+                <div class="column" style="margin: 1rem 0;gap: 1rem;">
+                    <input type="text" name="cityfilter" id="1_1_city_filter" placeholder="City">
+                    <input type="text" name="namefilter" id="1_1_name_filter" placeholder="Name">
+                    <div class="row">
+                        <label for="1_1_sort_filter">Sort by &nbsp;</label>
+                        <select name="sortfilter" id="1_1_sort_filter">
+                            <option value="name">Name</option>
+                            <option value="city">City</option>
+                            <option value="created_at">Creation time</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <label for="">Sort as &nbsp;</label>
+                        <select name="sortorderfilter" id="1_1_sort_orded_filter">
+                            <option value="asc">Ascending</option>
+                            <option value="desc">Descending</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <label for="1_1_limit_filter">Max elements to return: &nbsp;</label>
+                        <input type="number" name="limitfilter" id="1_1_limit_filter" value="20" min="1" max="100">
+                    </div>
+                    <div class="row">
+                        <label for="1_1_offset_filter">Exclude the first X elements: </label>
+                        <input type="number" name="offsetfilter" id="1_1_offset_filter" value="0" min="0">
+                    </div>
+                </div>
+                <button type="submit">Search!</button>
+            </div>
+
+
+        </form>
     </main>
 </body>
 </html>
