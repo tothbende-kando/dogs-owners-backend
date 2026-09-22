@@ -3,17 +3,13 @@ const path = require("path");
 const multer = require("multer");
 const mysql = require("mysql");
 
-
-
-
-
 //#region sql init
 const sql = mysql.createConnection({
     host : "localhost",
     port : 3306,
     user : "root",
     password : "",
-    database : "users",
+    database : "dog_club",
 });
 
 sql.connect(err => {
@@ -37,3 +33,7 @@ app.listen(port, () => {
     console.log("Backend is running on port ", port)
 });
 //#endregion
+
+app.get("/", (req, res) => res.redirect("/index"));
+app.get("/index", (req, res) => res.status(200).sendFile(path.join(__dirname, "./index.html")));
+app.get("/style.css", (req, res) => res.status(200).sendFile(path.join(__dirname, "./style.css")));
