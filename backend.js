@@ -37,3 +37,17 @@ app.listen(port, () => {
 app.get("/", (req, res) => res.redirect("/index"));
 app.get("/index", (req, res) => res.status(200).sendFile(path.join(__dirname, "./index.html")));
 app.get("/style.css", (req, res) => res.status(200).sendFile(path.join(__dirname, "./style.css")));
+app.get("/script.js", (req, res) => res.status(200).sendFile(path.join(__dirname, "./script.js")));
+
+app.get("/api/owners", (req, res) => {
+    const SQL_query = "SELECT * FROM owners;";
+    sql.query(SQL_query, (err, result, fields) => {
+        if (err) {
+            console.warn("GET /api/owners error: ", err.message);
+            return res.status(500).json({err});
+        }
+        else {
+            return res.status(200).json({result});
+        }
+    });
+});
