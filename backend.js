@@ -1,3 +1,6 @@
+const one_dot_one = require("./one_dot_one.js")
+
+
 const express = require("express");
 const path = require("path");
 const multer = require("multer");
@@ -13,12 +16,8 @@ const sql = mysql.createConnection({
 });
 
 sql.connect(err => {
-    if (err) {
-        console.warn("Can't connect, error: ", err.message);
-    }
-    else {
-        console.log("MySQL connected")
-    }
+    if (err) console.warn("Can't connect, error: ", err.message)
+    else console.log("MySQL connected")
 });
 //#endregion
 
@@ -40,14 +39,9 @@ app.get("/style.css", (req, res) => res.status(200).sendFile(path.join(__dirname
 app.get("/script.js", (req, res) => res.status(200).sendFile(path.join(__dirname, "./script.js")));
 
 app.get("/api/owners", (req, res) => {
-    const city = req.query.city;
-    const name = req.query.name;
-    const sort = req.query.sort;
-    const sortorder = req.query.sortorder;
-    const limit = req.query.limit;
-    const offset = req.query.offset;
+    const {city, name, sort, sortorder, limit, offset} = req.query;
 
-    switch (check_1_1_query_params_validity(city, name, sort, sortorder, limit, offset)) {
+    switch (one_dot_one.check_query_params_validity(city, name, sort, sortorder, limit, offset)) {
         case 0:
             break;
         case 1:
@@ -64,12 +58,13 @@ app.get("/api/owners", (req, res) => {
             return res.status(500).json({error:"If this happened, there is a SERIOUS issue"});
     }
 
-    const SQL_query = construct_1_1_query(city, name, sort, sortorder, limit, offset);
-    const SQL_parameters = construct_1_1_parameters(city, name, sort, sortorder, limit, offset);
+    const SQL_query = one_dot_one.construct_query(city, name, sort, sortorder, limit, offset);
+    const SQL_parameters = one_dot_one.construct_parameters(city, name, sort, sortorder, limit, offset);
 
     sql.query(SQL_query, SQL_parameters, (err, result, fields) => {
         if (err) {
             console.warn("GET /api/owners error: ", err.message);
+            console.log(fields);
             return res.status(500).json({err});
         }
         else {
@@ -77,69 +72,3 @@ app.get("/api/owners", (req, res) => {
         }
     });
 });
-
-
-function check_1_1_query_params_validity(city, name, sort, sortorder, limit, offset) {
-    if (limit < 1) {
-        return 1;
-    }
-    if (limit > 100) {
-        return 2;
-    }
-    if (offset < 0) {
-        return 3;
-    }
-    if (sort != "name" && sort != "city" && sort != "created_at") {
-        return 4;
-    }
-    if (sortorder != "asc" && sortorder != "desc") {
-        return 5;
-    }
-    return 0;
-}
-
-
-function construct_1_1_query(city, name, sort, sortorder, limit, offset) {
-    let SQL = "SELECT * FROM owners ";
-    SQL += construct_1_1_where_clause(city, name);
-    SQL += construct_1_1_order_by_clause(sort, sortorder);
-    SQL += "LIMIT ? ";
-    SQL += "OFFSET ?;";
-    return SQL;
-}
-
-
-function construct_1_1_where_clause(city, name) {
-    if (city.length < 1 && name.length < 1) return "";
-    if (city.length > 0 && name.length > 0) return "WHERE city = ? AND name LIKE %?%";
-    if (city.length > 0) return "WHERE city = ? ";
-    return "WHERE name LIKE %?% "
-}
-
-
-function construct_1_1_order_by_clause(sort, sortorder) {
-    let clause = "ORDER BY owners.";
-    switch (sort) {
-        case "created_at":
-            clause += "created_at ";
-            break;
-        case "city":
-            clause += "city ";
-            break;
-        default:
-            clause += "name ";
-            break;
-    }
-    clause += sortorder == "asc" ? "ASC " : "DESC ";
-    return clause;
-}
-
-
-function construct_1_1_parameters(city, name, sort, sortorder, limit, offset) {
-    let params = [];
-    if (city.length > 0) params.push(city);
-    if (name.length > 0) params.push(name);
-    params.push(+limit);
-    params.push(+offset);
-    return params;
-}
