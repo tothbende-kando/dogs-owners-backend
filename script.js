@@ -14,8 +14,24 @@ function fetch_assignment_1_1({ cityfilter:city, namefilter:name, sortfilter:sor
     ).then((response) => response.json())
     .then((json) => {
         const owners = json.result;
-        console.log(owners);
+        render_data(owners);
     }).catch((error) => {
         console.warn(error);
     }).finally();
+}
+
+
+function render_data(data) {
+    let html = "";
+    for (row of data) {
+        html += "<tr>";
+        html += "<td>" + row.id + "</td>";
+        html += "<td>" + row.name + "</td>";
+        html += "<td>" + row.email + "</td>";
+        html += "<td>" + row.phone + "</td>";
+        html += "<td>" + row.city + "</td>";
+        html += "<td>" + row.created_at + "</td>";
+        html += "</tr>";
+    }
+    document.getElementById("1_1_result_table").innerHTML = html;
 }
