@@ -3,14 +3,15 @@ document.getElementById("assignment_1_1_form").addEventListener("submit", functi
     e.stopPropagation();
 
     var formData = new FormData(e.target);
-    console.log(Object.fromEntries(formData));
+    fetch_assignment_1_1(Object.fromEntries(formData));
 });
 
 
-function fetch_assignment_1_1(params) {
-    
-    fetch("http://localhost:3000/api/owners")
-    .then((response) => response.json())
+function fetch_assignment_1_1({ cityfilter:city, namefilter:name, sortfilter:sort, sortorderfilter:sortorder, limitfilter:limit, offsetfilter:offset }) {
+    fetch("http://localhost:3000/api/owners?" + new URLSearchParams(
+        {city : city, name : name, sort : sort, sortorder : sortorder, limit : limit, offset : offset}
+        ).toString()
+    ).then((response) => response.json())
     .then((json) => {
         const owners = json.result;
         console.log(owners);

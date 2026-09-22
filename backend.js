@@ -40,8 +40,17 @@ app.get("/style.css", (req, res) => res.status(200).sendFile(path.join(__dirname
 app.get("/script.js", (req, res) => res.status(200).sendFile(path.join(__dirname, "./script.js")));
 
 app.get("/api/owners", (req, res) => {
-    const SQL_query = "SELECT * FROM owners;";
-    sql.query(SQL_query, (err, result, fields) => {
+    const city = req.query.city;
+    const name = req.query.name;
+    const sort = req.query.sort;
+    const sortorder = req.query.sortorder;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
+
+    const SQL_query = construct_1_1_query(city, name, sort, sortorder, limit, offset);
+    const SQL_parameters = construct_1_1_parameters(city, name, sort, sortorder, limit, offset);
+
+    sql.query(SQL_query, SQL_parameters, (err, result, fields) => {
         if (err) {
             console.warn("GET /api/owners error: ", err.message);
             return res.status(500).json({err});
@@ -51,3 +60,49 @@ app.get("/api/owners", (req, res) => {
         }
     });
 });
+
+
+function construct_1_1_query(city, name, sort, sortorder, limit, offset) {
+    let SQL = "SELECT * FROM owners ";
+    SQL += construct_1_1_where_clause(city, name);
+    SQL += construct_1_1_order_by_clause(sort, sortorder);
+    SQL += "LIMIT ? ";
+    SQL += "OFFSET ?;";
+    return SQL;
+}
+
+
+function construct_1_1_where_clause(city, name) {
+    if (city.length < 1 && name.length < 1) return "";
+    if (city.length > 0 && name.length > 0) return "WHERE city = ? AND name LIKE %?%";
+    if (city.length > 0) return "WHERE city = ? ";
+    return "WHERE name LIKE %?% "
+}
+
+
+function construct_1_1_order_by_clause(sort, sortorder) {
+    let clause = "ORDER BY owners.";
+    switch (sort) {
+        case "created_at":
+            clause += "created_at ";
+            break;
+        case "city":
+            clause += "city ";
+            break;
+        default:
+            clause += "name ";
+            break;
+    }
+    clause += sortorder == "asc" ? "ASC " : "DESC ";
+    return clause;
+}
+
+
+function construct_1_1_parameters(city, name, sort, sortorder, limit, offset) {
+    let params = [];
+    if (city.length > 0) params.push(city);
+    if (name.length > 0) params.push(name);
+    params.push(+limit);
+    params.push(+offset);
+    return params;
+}
