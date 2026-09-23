@@ -43,21 +43,22 @@ app.get("/index", (req, res) => res.status(200).sendFile(path.join(__dirname, ".
 app.get("/api/owners", (req, res) => {
     const {city, name, sort, sortorder, limit, offset} = req.query;
 
-    switch (one_dot_one.check_query_params_validity(city, name, sort, sortorder, limit, offset)) {
+    const validity = one_dot_one.check_query_params_validity(city, name, sort, sortorder, limit, offset);
+    switch (validity) {
         case 0:
             break;
         case 1:
-            return res.status(400).json({error:"Limit must be at least 1"});
+            return res.status(400).json({error:"Limit must be at least 1",value:limit});
         case 2:
-            return res.status(400).json({error:"Limit must be at most 100"});
+            return res.status(400).json({error:"Limit must be at most 100",value:limit});
         case 3:
-            return res.status(400).json({error:"Offset must be positive or 0"});
+            return res.status(400).json({error:"Offset must be positive or 0",value:offset});
         case 4:
-            return res.status(400).json({error:"The data may only be sorted based on the name, city, or account creation date"});
+            return res.status(400).json({error:"The data may only be sorted based on the name, city, or account creation date",value:sort});
         case 5:
-            return res.status(400).json({error:"The data may only be sorted in ascending or descending order"});
+            return res.status(400).json({error:"The data may only be sorted in ascending or descending order",value:sortorder});
         default:
-            return res.status(500).json({error:"If this happened, there is a SERIOUS issue"});
+            return res.status(500).json({error:"If this happened, there is a SERIOUS issue",value:validity});
     }
 
     const SQL_query = one_dot_one.construct_query(city, name, sort, sortorder, limit, offset);
@@ -74,3 +75,5 @@ app.get("/api/owners", (req, res) => {
         }
     });
 });
+
+
