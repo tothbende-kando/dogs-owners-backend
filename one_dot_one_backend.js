@@ -21,7 +21,7 @@ function check_query_params_validity(city, name, sort, sortorder, limit, offset)
 function construct_parameters(city, name, sort, sortorder, limit, offset) {
     let params = [];
     if (city.length > 0) params.push(city);
-    if (name.length > 0) params.push(name);
+    if (name.length > 0) params.push("%" + name + "%");
     params.push(+limit);
     params.push(+offset);
     return params;
@@ -40,9 +40,9 @@ function construct_query(city, name, sort, sortorder, limit, offset) {
 
 function construct_where_clause(city, name) {
     if (city.length < 1 && name.length < 1) return "";
-    if (city.length > 0 && name.length > 0) return "WHERE city = ? AND name LIKE %?%";
+    if (city.length > 0 && name.length > 0) return "WHERE city = ? AND name LIKE ? ";
     if (city.length > 0) return "WHERE city = ? ";
-    return "WHERE name LIKE %?% "
+    return "WHERE name LIKE ? "
 }
 
 
