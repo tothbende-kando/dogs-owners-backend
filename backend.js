@@ -6,6 +6,7 @@ const path = require("path");
 const multer = require("multer");
 const mysql = require("mysql");
 
+
 //#region sql init
 const sql = mysql.createConnection({
     host : "localhost",
@@ -27,16 +28,17 @@ const app = express();
 
 app.use(express.urlencoded());
 app.use(express.json());
+app.use(express.static(__dirname + "/"));
 
 app.listen(port, () => {
     console.log("Backend is running on port ", port)
 });
 //#endregion
 
+
 app.get("/", (req, res) => res.redirect("/index"));
 app.get("/index", (req, res) => res.status(200).sendFile(path.join(__dirname, "./index.html")));
-app.get("/style.css", (req, res) => res.status(200).sendFile(path.join(__dirname, "./style.css")));
-app.get("/script.js", (req, res) => res.status(200).sendFile(path.join(__dirname, "./script.js")));
+
 
 app.get("/api/owners", (req, res) => {
     const {city, name, sort, sortorder, limit, offset} = req.query;
