@@ -25,6 +25,11 @@ th, td {
 }
 
 
+a {
+    text-decoration: none;
+}
+
+
 .column {
     display: flex;
     flex-direction: column;

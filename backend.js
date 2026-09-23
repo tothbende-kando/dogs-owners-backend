@@ -1,4 +1,4 @@
-const one_dot_one = require("./one_dot_one.js")
+const one_dot_one = require("./one_dot_one_backend.js")
 
 
 const express = require("express");
@@ -38,6 +38,7 @@ app.listen(port, () => {
 
 app.get("/", (req, res) => res.redirect("/index"));
 app.get("/index", (req, res) => res.status(200).sendFile(path.join(__dirname, "./index.html")));
+app.get("/one_dot_one", (req, res) => res.status(200).sendFile(path.join(__dirname, "./one_dot_one.html")));
 
 
 app.get("/api/owners", (req, res) => {
