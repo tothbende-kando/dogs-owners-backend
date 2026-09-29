@@ -1,5 +1,6 @@
 const one_dot_one = require("./one_dot_one_backend.js");
 const one_dot_two = require("./one_dot_two_backend.js");
+const one_dot_three = require("./one_dot_three_backend.js");
 
 
 const express = require("express");
@@ -41,6 +42,7 @@ app.get("/", (req, res) => res.redirect("/index"));
 app.get("/index", (req, res) => res.status(200).sendFile(path.join(__dirname, "./index.html")));
 app.get("/one_dot_one", (req, res) => res.status(200).sendFile(path.join(__dirname, "./one_dot_one.html")));
 app.get("/one_dot_two", (req, res) => res.status(200).sendFile(path.join(__dirname, "./one_dot_two.html")));
+app.get("/one_dot_three", (req, res) => res.status(200).sendFile(path.join(__dirname, "./one_dot_three.html")));
 
 
 app.get("/api/owners", (req, res) => {
@@ -112,4 +114,57 @@ app.get("/api/owners/:id", (req, res) => {
             return res.status(200).json({result});
         }
     });
-})
+});
+
+
+app.get("/api/owners/:id/dogs", (req, res) => {
+    const id = +req.params.id;
+    const validity = one_dot_three.check_id_validity(id);
+
+    switch (validity) {
+        case 0:
+            break;
+        case 1:
+            return res.status(400).json({error:"ID must be a number, received id: ", value:id});
+        case 2:
+            return res.status(400).json({error:"ID must be a real number, received id: ", value:id});
+        case 3:
+            return res.status(400).json({error:"ID must be a positive number, received id: ", value:id});
+        case 4:
+            return res.status(400).json({error:"ID must be an integer, received id: ", value:id});
+        default:
+            return res.status(500).json({error:"If this happened, there is a SERIOUS issue, validity check result: ", value:validity});
+    }
+
+    const gender = req.query.gender;
+    const sortfilter = req.query.sortfilter;
+    const sortorder = req.query.sortorder;
+
+    const query_validity = one_dot_three.check_query_params_validity(gender, sortfilter, sortorder);
+
+    switch (query_validity) {
+        case 0:
+            break;
+        case 1:
+            return res.status(400).json({error:"The gender filter may only be \"none\", \"true\", or \"false\", received filter: ", value:gender});
+        case 2:
+            return res.status(400).json({error:"The sort filter may only be \"born_at\", \"name\", or \"weight_kg\", received filter: ", value:sortfilter});
+        case 3:
+            return res.status(400).json({error:"The results may only be sorted in \"asc\" or \"desc\" order, received order: ", value:sortorder});
+        default:
+            return res.status(500).json({error:"If this happened, there is a SERIOUS issue, validity check result: ", value:query_validity});
+    }
+
+    const SQL_query = one_dot_three.construct_query(id, gender, sortfilter, sortorder);
+
+    sql.query(SQL_query, (err, result, fields) => {
+        if (err) {
+            console.warn("GET /api/owners/{id} error: ", err.message);
+            console.log(fields);
+            return res.status(500).json("Internal server error");
+        }
+        else {
+            return res.status(200).json({result});
+        }
+    });
+});

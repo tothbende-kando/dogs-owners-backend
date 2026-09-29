@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="./one_dot_three_client.js" defer></script>
+    <title>1.3</title>
+</head>
+<body>
+    <main>
+        <h1>1.3</h1>
+        <form action="#" method="get" id="assignment_1_3_form" class="column" style="gap: 0.5rem;">
+            <div class="row">
+                <label for="1_3_gender_filter">Szűrés nem alapján:&nbsp;</label>
+                <select name="genderfilter" id="1_3_gender_filter">
+                    <option value="none">Mindegy</option>
+                    <option value="true">Lány</option>
+                    <option value="false">Fiú</option>
+                </select>
+            </div>
+            <div class="row">
+                <label for="1_3_sort_filter">Sorbarendezés&nbsp;</label>
+                <select name="sortfilter" id="1_3_sort_filter">
+                    <option value="born_at">Születés<s></s></option>
+                    <option value="name">Név<var></var></option>
+                    <option value="weight_kg">Súly</option>
+                </select>
+                <label for="1_3_sort_filter">&nbsp;alapján  </label>
+            </div>
+            <div class="row">
+                <label for="1_3_sort_order_filter">Sorbarendezés&nbsp;</label>
+                <select name="sortorderfilter" id="1_3_sort_order_filter">
+                    <option value="asc">Növekvő</option>
+                    <option value="desc">Csökkenő</option>
+                </select>
+                <label for="1_3_sort_order_filter">&nbsp;sorrendben</label>
+            </div>
+            <input type="number" name="useridrequester" id="1_3_user_id_requester" min="0" value="0">
+            <button type="submit">Search!</button>
+        </form>
+        
+        <table id="1_3_result_table">
+            
+        </table>
+
+        <a href="index">Back</a>
+    </main>
+</body>
+</html>
