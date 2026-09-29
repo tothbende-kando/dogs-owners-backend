@@ -1,6 +1,7 @@
 const one_dot_one = require("./one_dot_one_backend.js");
 const one_dot_two = require("./one_dot_two_backend.js");
 const one_dot_three = require("./one_dot_three_backend.js");
+const one_dot_four = require("./one_dot_four_backend.js");
 
 
 const express = require("express");
@@ -24,6 +25,7 @@ sql.connect(err => {
 });
 //#endregion
 
+
 //#region html server init
 const port = 3000;
 const app = express();
@@ -43,6 +45,7 @@ app.get("/index", (req, res) => res.status(200).sendFile(path.join(__dirname, ".
 app.get("/one_dot_one", (req, res) => res.status(200).sendFile(path.join(__dirname, "./one_dot_one.html")));
 app.get("/one_dot_two", (req, res) => res.status(200).sendFile(path.join(__dirname, "./one_dot_two.html")));
 app.get("/one_dot_three", (req, res) => res.status(200).sendFile(path.join(__dirname, "./one_dot_three.html")));
+app.get("/one_dot_four", (req, res) => res.status(200).sendFile(path.join(__dirname, "./one_dot_four.html")));
 
 
 app.get("/api/owners", (req, res) => {
@@ -162,6 +165,31 @@ app.get("/api/owners/:id/dogs", (req, res) => {
             console.warn("GET /api/owners/{id} error: ", err.message);
             console.log(fields);
             return res.status(500).json("Internal server error");
+        }
+        else {
+            return res.status(200).json({result});
+        }
+    });
+});
+
+
+app.post("/api/owners", (req, res) => {
+    const name = req.body.nameinput;
+    const email = req.body.emailinput;
+    const phone = req.body.phoneinput;
+    const city = req.body.cityinput;
+
+    const SQL_query = one_dot_four.construct_sql(email, phone, city);
+    const SQL_parameters = one_dot_four.construct_parameters(name, email, phone, city);
+
+    console.log(SQL_query);
+    console.log(SQL_parameters);
+
+    sql.query(SQL_query, SQL_parameters, (err, result, fields) => {
+        if (err) {
+            console.warn("POST /api/owners error: ", err.message);
+            console.log(fields);
+            return res.status(500).json({err});
         }
         else {
             return res.status(200).json({result});

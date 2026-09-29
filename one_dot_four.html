@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="./one_dot_four_client.js" defer></script>
+    <title>1.4</title>
+</head>
+<body>
+    <main>
+        <h1>1.4</h1>
+        <form action="#" method="get" id="assignment_1_4_form" class="column" style="gap: 0.5rem;">
+            <div class="row">
+                <label for="1_4_name_input">Név:&nbsp;</label>
+                <input type="text" name="nameinput" id="1_4_name_input">
+            </div>
+            <div class="row">
+                <label for="1_4_email_input">Email:&nbsp;</label>
+                <input type="email" name="emailinput" id="1_4_email_input">
+            </div>
+            <div class="row">
+                <label for="1_4_phone_input">Phone:&nbsp;</label>
+                <input type="tel" name="phoneinput" id="1_4_phone_input" pattern="\+36 [0-9]{2} [0-9]{3} [0-9]{4}" placeholder="+36 30 123 4567">
+            </div>
+            <div class="row">
+                <label for="1_4_city_input">City:&nbsp;</label>
+                <input type="text" name="cityinput" id="1_4_city_input">
+            </div>
+            <button type="submit">Add</button>
+        </form>
+        <a href="index">Back</a>
+    </main>
+</body>
+</html>
