@@ -1,4 +1,5 @@
-const one_dot_one = require("./one_dot_one_backend.js")
+const one_dot_one = require("./one_dot_one_backend.js");
+const one_dot_two = require("./one_dot_two_backend.js");
 
 
 const express = require("express");
@@ -39,6 +40,7 @@ app.listen(port, () => {
 app.get("/", (req, res) => res.redirect("/index"));
 app.get("/index", (req, res) => res.status(200).sendFile(path.join(__dirname, "./index.html")));
 app.get("/one_dot_one", (req, res) => res.status(200).sendFile(path.join(__dirname, "./one_dot_one.html")));
+app.get("/one_dot_two", (req, res) => res.status(200).sendFile(path.join(__dirname, "./one_dot_two.html")));
 
 
 app.get("/api/owners", (req, res) => {
@@ -49,17 +51,17 @@ app.get("/api/owners", (req, res) => {
         case 0:
             break;
         case 1:
-            return res.status(400).json({error:"Limit must be at least 1",value:limit});
+            return res.status(400).json({error:"Limit must be at least 1", value:limit});
         case 2:
-            return res.status(400).json({error:"Limit must be at most 100",value:limit});
+            return res.status(400).json({error:"Limit must be at most 100", value:limit});
         case 3:
-            return res.status(400).json({error:"Offset must be positive or 0",value:offset});
+            return res.status(400).json({error:"Offset must be positive or 0", value:offset});
         case 4:
-            return res.status(400).json({error:"The data may only be sorted based on the name, city, or account creation date",value:sort});
+            return res.status(400).json({error:"The data may only be sorted based on the name, city, or account creation date", value:sort});
         case 5:
-            return res.status(400).json({error:"The data may only be sorted in ascending or descending order",value:sortorder});
+            return res.status(400).json({error:"The data may only be sorted in ascending or descending order", value:sortorder});
         default:
-            return res.status(500).json({error:"If this happened, there is a SERIOUS issue",value:validity});
+            return res.status(500).json({error:"If this happened, there is a SERIOUS issue", value:validity});
     }
 
     const SQL_query = one_dot_one.construct_query(city, name, sort, sortorder, limit, offset);
@@ -77,4 +79,37 @@ app.get("/api/owners", (req, res) => {
     });
 });
 
+ 
+app.get("/api/owners/:id", (req, res) => {
+    const id = +req.params.id;
+    const validity = one_dot_two.check_id_validity(id);
 
+    switch (validity) {
+        case 0:
+            break;
+        case 1:
+            return res.status(400).json({error:"ID must be a number, received id: ", value:id});
+        case 2:
+            return res.status(400).json({error:"ID must be a real number, received id: ", value:id});
+        case 3:
+            return res.status(400).json({error:"ID must be a positive number, received id: ", value:id});
+        case 4:
+            return res.status(400).json({error:"ID must be an integer, received id: ", value:id});
+        default:
+            return res.status(500).json({error:"If this happened, there is a SERIOUS issue, validity check result: ", value:validity});
+    }
+
+    const SQL_query = one_dot_two.construct_query(id);
+
+    sql.query(SQL_query, (err, result, fields) => {
+        if (err) {
+            console.warn("GET /api/owners/{id} error: ", err.message);
+            console.log(fields);
+            return res.status(500).json("Internal server error");
+        }
+        else {
+            if (result.length == 0) return res.status(404).json({error : "404 no owner with id ", value : id});
+            return res.status(200).json({result});
+        }
+    });
+})
