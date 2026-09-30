@@ -182,9 +182,6 @@ app.post("/api/owners", (req, res) => {
     const SQL_query = one_dot_four.construct_sql(email, phone, city);
     const SQL_parameters = one_dot_four.construct_parameters(name, email, phone, city);
 
-    console.log(SQL_query);
-    console.log(SQL_parameters);
-
     sql.query(SQL_query, SQL_parameters, (err, result, fields) => {
         if (err) {
             console.warn("POST /api/owners error: ", err.message);
