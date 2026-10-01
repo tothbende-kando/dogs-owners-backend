@@ -25,5 +25,10 @@ function fetch_assignment_1_4(data) {
 
 
 function render_data(data) {
-    console.log(data);
+    if (data) {
+        document.getElementById("result").innerText = (data.affectedRows > 0) ? "Successfully inserted " + data.affectedRows + " new entries" : "Failed to insert any new entries";
+    }
+    else {
+        document.getElementById("result").innerText = "Failed to insert any new entries";
+    }
 }
