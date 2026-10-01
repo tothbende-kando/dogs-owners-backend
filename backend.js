@@ -2,6 +2,7 @@ const one_dot_one = require("./one_dot_one_backend.js");
 const one_dot_two = require("./one_dot_two_backend.js");
 const one_dot_three = require("./one_dot_three_backend.js");
 const one_dot_four = require("./one_dot_four_backend.js");
+const one_dot_five = require("./one_dot_five_backend.js");
 
 
 const express = require("express");
@@ -46,6 +47,7 @@ app.get("/one_dot_one", (req, res) => res.status(200).sendFile(path.join(__dirna
 app.get("/one_dot_two", (req, res) => res.status(200).sendFile(path.join(__dirname, "./one_dot_two.html")));
 app.get("/one_dot_three", (req, res) => res.status(200).sendFile(path.join(__dirname, "./one_dot_three.html")));
 app.get("/one_dot_four", (req, res) => res.status(200).sendFile(path.join(__dirname, "./one_dot_four.html")));
+app.get("/one_dot_five", (req, res) => res.status(200).sendFile(path.join(__dirname, "./one_dot_five.html")));
 
 
 app.get("/api/owners", (req, res) => {
@@ -189,6 +191,63 @@ app.post("/api/owners", (req, res) => {
             return res.status(500).json({err});
         }
         else {
+            return res.status(200).json({result});
+        }
+    });
+});
+
+app.put("/api/owners/:id", (req, res) => {
+    const id = +req.params.id;
+    const id_validity = one_dot_five.is_id_valid(id);
+
+    switch (id_validity) {
+        case 0:
+            break;
+        case 1:
+            return res.status(400).json({error:"ID must be a number, received id: ", value:id});
+        case 2:
+            return res.status(400).json({error:"ID must be a real number, received id: ", value:id});
+        case 3:
+            return res.status(400).json({error:"ID must be a positive number, received id: ", value:id});
+        case 4:
+            return res.status(400).json({error:"ID must be an integer, received id: ", value:id});
+        default:
+            return res.status(500).json({error:"If this happened, there is a SERIOUS issue, validity check result: ", value:validity});
+    }
+
+    const name = req.body.nameinput;
+    const email = req.body.emailinput;
+    const phone = req.body.phoneinput;
+    const city = req.body.cityinput;
+
+    const validity = one_dot_five.are_parameters_valid(name, email, phone, city);
+
+    switch (validity) {
+        case 0:
+            break;
+        case 1:
+            return res.status(400).json({error:"Name is required: ", value:name});
+        case 2:
+            return res.status(400).json({error:"Email is required: ", value:email});
+        case 3:
+            return res.status(400).json({error:"Phone is required: ", value:phone});
+        case 4:
+            return res.status(400).json({error:"City is required: ", value:city});
+        default:
+            return res.status(500).json({error:"If this happened, there is a SERIOUS issue, validity check result: ", value:validity});
+    }
+
+    const SQL_query = one_dot_five.construct_sql();
+    const SQL_params = one_dot_five.construct_parameters(id, name, email, phone, city);
+
+    sql.query(SQL_query, SQL_params, (err, result, fields) => {
+        if (err) {
+            console.warn("PUT /api/owners/{id} error: ", err.message);
+            console.log(fields);
+            return res.status(500).json({result : null, err : "Internal server error" + (err.message.includes("ER_DUP_ENTRY") ? ": duplicate email" : "")});
+        }
+        else {
+            if (result.length == 0) return res.status(404).json({error : "404 no owner with id ", value : id});
             return res.status(200).json({result});
         }
     });

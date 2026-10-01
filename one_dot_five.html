@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="./one_dot_five_client.js" defer></script>
+    <title>1.5</title>
+</head>
+<body>
+    <main>
+        <h1>1.5</h1>
+        <h1><strong>1.4-est ki is kéne renderelni</strong></h1>
+        <form action="#" method="get" id="assignment_1_5_form" class="column" style="gap: 0.5rem;">
+            <div class="row">
+                <label for="1_5_id_input">ID:&nbsp;</label>
+                <input type="number" name="idinput" id="1_5_id_input" min="0" value="0" required>
+            </div>
+            <div class="row">
+                <label for="1_5_name_input">Név:&nbsp;</label>
+                <input type="text" name="nameinput" id="1_5_name_input" required>
+            </div>
+            <div class="row">
+                <label for="1_5_email_input">Email:&nbsp;</label>
+                <input type="email" name="emailinput" id="1_5_email_input" required>
+            </div>
+            <div class="row">
+                <label for="1_5_phone_input">Phone:&nbsp;</label>
+                <input type="tel" name="phoneinput" id="1_5_phone_input" pattern="\+36 [0-9]{2} [0-9]{3} [0-9]{4}" placeholder="+36 30 123 4567" required>
+            </div>
+            <div class="row">
+                <label for="1_5_city_input">City:&nbsp;</label>
+                <input type="text" name="cityinput" id="1_5_city_input" required>
+            </div>
+            <button type="submit">Add</button>
+        </form>
+        <p id="result">
+            
+        </p>
+        <a href="index">Back</a>
+    </main>
+</body>
+</html>
