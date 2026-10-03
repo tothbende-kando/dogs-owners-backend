@@ -88,7 +88,6 @@ app.get("/api/owners", (req, res) => {
     });
 });
 
- 
 app.get("/api/owners/:id", (req, res) => {
     const id = +req.params.id;
     const validity = one_dot_two.check_id_validity(id);
@@ -122,7 +121,6 @@ app.get("/api/owners/:id", (req, res) => {
         }
     });
 });
-
 
 app.get("/api/owners/:id/dogs", (req, res) => {
     const id = +req.params.id;
@@ -175,7 +173,6 @@ app.get("/api/owners/:id/dogs", (req, res) => {
         }
     });
 });
-
 
 app.post("/api/owners", (req, res) => {
     const name = req.body.nameinput;
